@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ELASTICSEARCH/Elasticsearch.iml" filepath="$PROJECT_DIR$/ELASTICSEARCH/Elasticsearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MAPREDUCER/MapReducer.iml" filepath="$PROJECT_DIR$/MAPREDUCER/MapReducer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/STORM/Storm.iml" filepath="$PROJECT_DIR$/STORM/Storm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Stream_Compute.iml" filepath="$PROJECT_DIR$/Stream_Compute.iml" />
+      <module fileurl="file://$PROJECT_DIR$/COMMONS/commons.iml" filepath="$PROJECT_DIR$/COMMONS/commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/NETTY/netty.iml" filepath="$PROJECT_DIR$/NETTY/netty.iml" />
+    </modules>
+  </component>
+</project>

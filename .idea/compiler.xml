@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Commons" />
+        <module name="commons" />
+        <module name="Elasticsearch" />
+        <module name="MapReducer" />
+        <module name="Netty" />
+        <module name="netty" />
+        <module name="Storm" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="8">
+      <module name="Commons" target="1.8" />
+      <module name="commons" target="1.8" />
+      <module name="Elasticsearch" target="1.8" />
+      <module name="MapReducer" target="1.8" />
+      <module name="Netty" target="1.8" />
+      <module name="netty" target="1.8" />
+      <module name="Storm" target="1.8" />
+      <module name="Stream_Compute" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
