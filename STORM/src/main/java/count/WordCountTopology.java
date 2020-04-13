@@ -5,8 +5,12 @@ import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WordCountTopology {
+    public final static Logger LOGGER = LoggerFactory.getLogger(WordCountTopology.class);
+
     public static void main(String[] args) throws Exception {
         SentenceSpout sentenceSpout = new SentenceSpout();
         SplitSentenceBolt splitSentenceBolt = new SplitSentenceBolt();
@@ -40,5 +44,6 @@ public class WordCountTopology {
             //linux集群提交
             StormSubmitter.submitTopology("word-count-topology", config, topologyBuilder.createTopology());
         }
+        LOGGER.info("task submit success");
     }
 }

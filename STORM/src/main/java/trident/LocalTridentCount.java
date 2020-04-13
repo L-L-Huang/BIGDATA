@@ -26,7 +26,7 @@ public class LocalTridentCount {
     public static class MyBatchSpout implements IBatchSpout {
 
         Fields fields;
-        HashMap<Long, List<List<Object>>> batches = new HashMap<Long, List<List<Object>>>();
+        HashMap<Long, List<List<Object>>> batches = new HashMap<>();
 
         public MyBatchSpout(Fields fields) {
             this.fields = fields;
@@ -40,7 +40,7 @@ public class LocalTridentCount {
         public void emitBatch(long batchId, TridentCollector collector) {
             List<List<Object>> batch = this.batches.get(batchId);
             if (batch == null) {
-                batch = new ArrayList<List<Object>>();
+                batch = new ArrayList<>();
                 Collection<File> listFiles = FileUtils.listFiles(new File("F:\\workpalce\\STREAM_COMPUTE\\STORM\\conf"), new String[]{"txt"}, true);
                 for (File file : listFiles) {
                     List<String> readLines;
@@ -108,7 +108,7 @@ public class LocalTridentCount {
         @Override
         public Map<String, Integer> init(Object batchId,
                                          TridentCollector collector) {
-            return new HashMap<String, Integer>();
+            return new HashMap<>();
         }
 
         @Override

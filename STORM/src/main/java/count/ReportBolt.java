@@ -21,12 +21,13 @@ public class ReportBolt extends BaseRichBolt {
         counts.put(word, count);
         //对counts中的单词进行排序
         List<Map.Entry<String, Integer>> list = new ArrayList(counts.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return o2.getValue() - o1.getValue();
-            }
-        });
+    //        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+    //            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+    //                return o2.getValue() - o1.getValue();
+    //            }
+    //        });
 
+        Collections.sort(list, (a, b) -> b.getValue().compareTo(a.getValue()));
         //取list中前10个单词
         int n = list.size() <= 10 ? list.size() : 10;
         String resultStr = "";
