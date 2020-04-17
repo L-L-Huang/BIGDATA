@@ -12,6 +12,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.NamedPoolThreadFactory;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.concurrent.*;
 
@@ -20,6 +21,7 @@ public class HttpServer {
     private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
     protected EventLoopGroup bossGroup;
     protected EventLoopGroup workerGroup;
+    public static ExecutorService req_pool;
 
     public static void main(String[] args) {
         if (args.length < 4) {
@@ -30,6 +32,7 @@ public class HttpServer {
     }
 
     public void start(String[] args) {
+        req_pool = new ThreadPoolExecutor(8, 16, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new NamedPoolThreadFactory("http-server-handler"), new ThreadPoolExecutor.CallerRunsPolicy());
         createNioServer(args);
     }
 
@@ -88,20 +91,17 @@ public class HttpServer {
         int bossThreads = Integer.valueOf(args[0]);
         int workThreads = Integer.valueOf(args[1]);
         int socketQueueSize = Integer.valueOf(args[2]);
-        int workIoRatio = Integer.valueOf(args[3]);
 
         EventLoopGroup bossGroup = getBossGroup();
         EventLoopGroup workerGroup = getWorkerGroup();
 
         if (bossGroup == null) {
             EpollEventLoopGroup epollEventLoopGroup = new EpollEventLoopGroup(bossThreads, getBossThreadFactory());
-            epollEventLoopGroup.setIoRatio(100);
             bossGroup = epollEventLoopGroup;
         }
 
         if (workerGroup == null) {
             EpollEventLoopGroup epollEventLoopGroup = new EpollEventLoopGroup(workThreads, getWorkThreadFactory());
-            epollEventLoopGroup.setIoRatio(workIoRatio);
             workerGroup = epollEventLoopGroup;
         }
 
@@ -132,7 +132,7 @@ public class HttpServer {
                 }
             });
             initOptions(b, socketQueueSize);
-            //绑定100个端口
+            //绑定200个端口
             for (int i = 0; i < nPort; i++) {
                 port = beginPort + i;
                 f = b.bind("0.0.0.0", port).sync();

@@ -28,7 +28,13 @@
             <artifactId>storm-core</artifactId>
             <version>1.2.3</version>
             <!-- linux运行时解开scope的注释，本地运行则添加注释 -->
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -59,7 +65,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>count.WordCountTopology</mainClass>
+                                    <mainClass>ddbook.DDBookTopology</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

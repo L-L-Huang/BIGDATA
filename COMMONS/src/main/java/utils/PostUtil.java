@@ -9,8 +9,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JsonPost {
-    public final static Logger LOGGER = LoggerFactory.getLogger(JsonPost.class);
+public class PostUtil {
+    public final static Logger LOGGER = LoggerFactory.getLogger(PostUtil.class);
 
     public static String HttpPostWithJson(String url, String json) {
         String returnValue = "query error";

@@ -13,14 +13,14 @@ public class TPS {
 //        String url = "http://192.168.208.104/v1";
         //0-99的随机数
         String json = "{\"query\":{\"bool\":{\"must\":[{\"match_phrase\":{\"imtype\":\"LTCUS\"}},{\"match_phrase\":{\"rtdatetime\":1521164922000}}]}}}";
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(500);
-        for (int i = 0; i < 500; i++) {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1000);
+        for (int i = 0; i < 1000; i++) {
             int random = (int) (Math.random() * 100000) % 199;
             int port = 9900 + random;
             String url = "http://192.168.208.103:".concat(String.valueOf(port));
             executorService.scheduleWithFixedDelay(() -> {
-                System.out.println(JsonPost.HttpPostWithJson(url, json));
-            }, 1, 2, TimeUnit.SECONDS);
+                    System.out.println(PostUtil.HttpPostWithJson(url, json));
+            }, 1, 1, TimeUnit.SECONDS);
         }
     }
 }
