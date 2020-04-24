@@ -39,13 +39,10 @@ public class ProducerClient {
         @Override
         public void onCompletion(RecordMetadata recordMetadata, Exception e) {
             if (e != null) {
-                logger.error("send error ! ", e);
+                logger.error("send error", e);
                 return;
             }
-            logger.info("send success! topic : {}, partition : {}, offset: {} ", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset());
-            if(logger.isDebugEnabled()){
-                logger.debug("send success! topic : {}, partition : {}, offset: {} ", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset());
-            }
+            logger.info("send success, topic : {}, partition : {}, offset: {} ", recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset());
         }
     }
 }

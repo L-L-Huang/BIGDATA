@@ -64,7 +64,7 @@ public class DDBookTest {
     @Test
     public void delete() throws Exception {
         RestHighLevelClient client = ESPoolUtil.getClient();
-        DeleteRequest request = new DeleteRequest("ddbook").id("1");
+        DeleteRequest request = new DeleteRequest("mr_task").id("mr_task_2020-04-24:16");
         DeleteResponse response = client.delete(request,RequestOptions.DEFAULT);
         System.out.println(response.getResult());
     }

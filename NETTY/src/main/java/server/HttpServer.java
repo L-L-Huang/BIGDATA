@@ -16,6 +16,9 @@ import utils.NamedPoolThreadFactory;
 import java.nio.channels.spi.SelectorProvider;
 import java.util.concurrent.*;
 
+/**
+ * http服务器
+ */
 public class HttpServer {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);

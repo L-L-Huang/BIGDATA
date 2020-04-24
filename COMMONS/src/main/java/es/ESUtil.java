@@ -3,19 +3,28 @@ package es;
 import com.alibaba.fastjson.JSONObject;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * ES操作工具类
  */
-public class ESUtil {
+public class ESUtil<T> {
     public final static Logger LOGGER = LoggerFactory.getLogger(ESUtil.class);
+    //饿汉式
+    public final static ESUtil INSTANCE = new ESUtil();
 
     /**
      * 异步插入一条文档
@@ -30,9 +39,27 @@ public class ESUtil {
             client = ESPoolUtil.getClient();
             client.indexAsync(indexRequest, RequestOptions.DEFAULT, new ESAsyncListener());
         } catch (Exception e) {
-            LOGGER.error("insert es fail", e);
+            LOGGER.error("insert es async fail", e);
         } finally {
             ESPoolUtil.returnClient(client);
+        }
+    }
+
+    /**
+     * 同步插入一条文档
+     * @param indexRequest
+     */
+    public static IndexResponse insertSync(IndexRequest indexRequest){
+        RestHighLevelClient client = null;
+        IndexResponse indexResponse = null;
+        try {
+            client = ESPoolUtil.getClient();
+            indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
+        } catch (Exception e) {
+            LOGGER.error("insert es sync fail", e);
+        } finally {
+            ESPoolUtil.returnClient(client);
+            return indexResponse;
         }
     }
 
@@ -50,7 +77,7 @@ public class ESUtil {
             client = ESPoolUtil.getClient();
             client.bulkAsync(bulkRequest,RequestOptions.DEFAULT, new ESAsyncListener());
         } catch (Exception e) {
-            LOGGER.error("insert es fail", e);
+            LOGGER.error("insert es batch async fail", e);
         } finally {
             ESPoolUtil.returnClient(client);
         }
@@ -69,4 +96,34 @@ public class ESUtil {
         return indexRequest;
     }
 
+    /**
+     * 通用查询
+     * @param index
+     * @param boolQuery
+     * @return
+     */
+    public List<T> boolQuery(String index, BoolQueryBuilder boolQuery, Class<T> clazz) {
+        RestHighLevelClient client = null;
+        List<T> list = null;
+        try {
+            client = ESPoolUtil.getClient();
+            SearchRequest searchRequest = new SearchRequest(index);
+            SearchSourceBuilder searchSourceBuilder =  new SearchSourceBuilder();
+            searchSourceBuilder.query(boolQuery);
+            searchRequest.source(searchSourceBuilder);
+            //查询结果
+            SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+            SearchHits hits = searchResponse.getHits();
+            SearchHit[] searchHits = hits.getHits();
+            list = new ArrayList<T>(searchHits.length);
+            for (SearchHit hit : searchHits) {
+                list.add(JSONObject.parseObject(hit.getSourceAsString(), clazz));
+            }
+        } catch (Exception e) {
+            LOGGER.error("boolQuery error", e);
+        } finally {
+            ESPoolUtil.returnClient(client);
+        }
+        return list;
+    }
 }

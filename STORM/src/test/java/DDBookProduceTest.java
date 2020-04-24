@@ -23,10 +23,10 @@ public class DDBookProduceTest {
             JSONArray datas = new JSONArray();
             datas.add(createQueryData("大数据", null));
             datas.add(createQueryData("消息中间件", null));
-            datas.add(createQueryData(null, "a0002"));
+//            datas.add(createQueryData(null, "a0002"));
             ProducerClient.instance.sendMsg(Constants.STORM_TOPIC, datas.toJSONString().getBytes());
 //            System.out.println("ddbook query data send kafka success");
-            Thread.sleep(2000);
+            Thread.sleep(10000);
         }
     }
 
@@ -44,7 +44,7 @@ public class DDBookProduceTest {
         SearchRequest searchRequest = new SearchRequest("ddbook");
         SearchSourceBuilder searchSourceBuilder =  new SearchSourceBuilder();
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-        //设定.keyword完全匹配
+        //设定.keyword完全匹配，否则分词器会对中文进行拆分
         boolQuery.must(QueryBuilders.wildcardQuery("bookType.keyword", "*大数据*"));
         searchSourceBuilder.query(boolQuery);
         searchRequest.source(searchSourceBuilder);

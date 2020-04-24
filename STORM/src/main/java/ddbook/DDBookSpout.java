@@ -32,6 +32,7 @@ public class DDBookSpout extends BaseRichSpout {
         props.put("group.id", "GROUP_".concat(Constants.STORM_TOPIC));
         props.put("enable.auto.commit", "false");
         props.put("session.timeout.ms", "10000");
+        props.put("max.poll.records", "2000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         consumer = new KafkaConsumer<>(props);
@@ -41,13 +42,11 @@ public class DDBookSpout extends BaseRichSpout {
     @Override
     public void nextTuple() {
         ConsumerRecords<byte[], byte[]> records = consumer.poll(1000);
-        StringBuilder builder;
-        for(ConsumerRecord<byte[], byte[]> record:records) {
-            builder = new StringBuilder(record.topic()).append("_").append(record.partition()).append("_").append(record.offset());
-            String msgId = builder.toString();
+        for(ConsumerRecord<byte[], byte[]> record : records) {
+            String msgId = new StringBuilder(record.topic()).append("_").append(record.partition()).append("_").append(record.offset()).toString();
             byte[] value = record.value();
             collector.emit(new Values(value), msgId);
-            LOGGER.info("DDBOOK consume data success, msgId", msgId);
+            LOGGER.info("Storm consume data success, msgId", msgId);
         }
     }
 
@@ -67,5 +66,12 @@ public class DDBookSpout extends BaseRichSpout {
     @Override
     public void fail(Object msgId) {
         super.fail(msgId);
+    }
+
+    @Override
+    public void close() {
+        if(consumer != null){
+            consumer.close();
+        }
     }
 }

@@ -1,20 +1,18 @@
 package server;
 
-import com.alibaba.fastjson.JSONObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.*;
 import io.netty.util.ReferenceCountUtil;
+import kafka.ProducerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.nio.charset.StandardCharsets;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import utils.Constants;
 
+/**
+ * 业务处理器
+ */
 public class BusinessHandler implements Runnable{
     public final static Logger LOGGER = LoggerFactory.getLogger(BusinessHandler.class);
     private ChannelHandlerContext ctx;
@@ -26,24 +24,20 @@ public class BusinessHandler implements Runnable{
 
     @Override
     public void run() {
-        String responseMsg = "success";
         try {
             FullHttpRequest req = (FullHttpRequest) msg;
             int reqDataLen = req.content().readableBytes();
             if (reqDataLen == 0) {
                 LOGGER.warn("request data length = {}", reqDataLen);
-                ctx.writeAndFlush(buildResponse("fail")).addListener(future -> ctx.close());
-                responseMsg = "fail";
                 return;
             }
             byte[] content = new byte[reqDataLen];
             req.content().readBytes(content);
-            JSONObject data = JSONObject.parseObject(new String(content, StandardCharsets.UTF_8));
-            System.out.println(data.toString());
+            ProducerClient.instance.sendMsg(Constants.MR_TOPIC, content);
         } catch (Exception e) {
             LOGGER.error("error netty",e);
         } finally {
-            ctx.writeAndFlush(buildResponse(responseMsg)).addListener(future -> ctx.close());
+            ctx.writeAndFlush(buildResponse(Constants.HTTP_SERVER_RESPONSE)).addListener(future -> ctx.close());
             ReferenceCountUtil.release(msg);
         }
     }
@@ -51,7 +45,7 @@ public class BusinessHandler implements Runnable{
     private FullHttpResponse buildResponse(String msg){
         byte[] responseMsg = msg.getBytes();
         ByteBuf content = Unpooled.wrappedBuffer(responseMsg);
-        FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, OK, content);
+        FullHttpResponse res = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
         res.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream;charset=UTF-8");
         res.headers().set(HttpHeaderNames.CONTENT_LENGTH, responseMsg.length);
         return res;

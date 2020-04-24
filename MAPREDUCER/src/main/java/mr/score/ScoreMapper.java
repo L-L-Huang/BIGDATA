@@ -11,12 +11,14 @@ public class ScoreMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+        //接收KEYIN和VALUEIN
         String line = new String(value.getBytes(),0,value.getLength(),"UTF-8");
         StringTokenizer itr = new StringTokenizer(line);
         String strName = itr.nextToken();
         String strScore = itr.nextToken();
         Text name = new Text(strName);
         int scoreInt = Integer.valueOf(strScore);
+        //输出KEYOUT和VALUEOUT
         context.write(name, new IntWritable(scoreInt));
     }
 }
