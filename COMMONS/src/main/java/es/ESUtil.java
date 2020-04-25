@@ -6,6 +6,8 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateRequest;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -64,6 +66,24 @@ public class ESUtil<T> {
     }
 
     /**
+     * 更新一条文档
+     * @param updateRequest
+     */
+    public static UpdateResponse updateSync(UpdateRequest updateRequest){
+        RestHighLevelClient client = null;
+        UpdateResponse updateResponse = null;
+        try {
+            client = ESPoolUtil.getClient();
+            updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
+        } catch (Exception e) {
+            LOGGER.error("insert es sync fail", e);
+        } finally {
+            ESPoolUtil.returnClient(client);
+            return updateResponse;
+        }
+    }
+
+    /**
      * 异步插入多条文档
      * @param requests
      */
@@ -115,7 +135,7 @@ public class ESUtil<T> {
             SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
             SearchHits hits = searchResponse.getHits();
             SearchHit[] searchHits = hits.getHits();
-            list = new ArrayList<T>(searchHits.length);
+            list = new ArrayList<>(searchHits.length);
             for (SearchHit hit : searchHits) {
                 list.add(JSONObject.parseObject(hit.getSourceAsString(), clazz));
             }
@@ -124,6 +144,6 @@ public class ESUtil<T> {
         } finally {
             ESPoolUtil.returnClient(client);
         }
-        return list;
+        return list == null ? new ArrayList<>() : list;
     }
 }

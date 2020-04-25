@@ -7,6 +7,7 @@ import model.DDBook;
 import mr.enums.MrTaskStatus;
 import mr.utils.HadoopUtil;
 import mr.utils.ParquetUtil;
+import org.apache.hadoop.fs.Path;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -19,7 +20,6 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.Constants;
-import utils.DateUtil;
 import java.io.IOException;
 import java.util.*;
 
@@ -53,10 +53,10 @@ public enum KafkaToHdfsHandler {
         }
         ParquetWriter<Group> writer = null;
         long timestamp = System.currentTimeMillis();
-        String filePath = ParquetUtil.getWriteFilePath(timestamp);
-        String inPath = filePath.concat("/").concat(ParquetUtil.getWriteFileName(timestamp));
+        String dir = ParquetUtil.getWriteFileDir(timestamp);
+        String inPath = dir.concat("/").concat(ParquetUtil.getWriteFileName(timestamp));
         try {
-            writer = ParquetUtil.getParquetWriter(inPath);
+            writer = ParquetUtil.getParquetWriter(new Path(inPath));
             Map<TopicPartition,OffsetAndMetadata> partitionAndMetadataMap = new HashMap<>();
             for (TopicPartition partition : records.partitions()) {
                 List<ConsumerRecord<byte[], byte[]>> partitionRecords = records.records(partition);
@@ -68,7 +68,7 @@ public enum KafkaToHdfsHandler {
                 }
             }
             ParquetUtil.closeParquetWriter(writer);
-            int status = createMrTask(timestamp, filePath);
+            int status = createMrTask(timestamp, dir);
             if(status == 200 || status == 201){
                 consumer.commitSync(partitionAndMetadataMap);
                 LOGGER.info("create mr task success, inPath=[{}]", inPath);
@@ -84,12 +84,10 @@ public enum KafkaToHdfsHandler {
     }
 
     //mr任务详情写es
-    private int createMrTask(long timestamp, String filePath){
+    private int createMrTask(long timestamp, String dir){
         try {
-            StringBuilder builder = new StringBuilder(Constants.MR_INDEX_NAME);
-            builder.append("_").append(DateUtil.longToStr(Constants.DAY_FORMAT, timestamp)).append(":").append(DateUtil.getHour(timestamp));
-            String mrCode = builder.toString();
-            IndexRequest indexRequest = ESCommons.mrRequest(Constants.MR_INDEX_NAME, mrCode, filePath, MrTaskStatus.ACTIVE.getCode());
+            String mrCode = ParquetUtil.getMrTaskCode(timestamp);
+            IndexRequest indexRequest = ESCommons.insertRequest(Constants.MR_INDEX_NAME, mrCode, dir, MrTaskStatus.ACTIVE.getCode());
             IndexResponse indexResponse = ESUtil.insertSync(indexRequest);
             return indexResponse.status().getStatus();
         } catch (Exception e) {

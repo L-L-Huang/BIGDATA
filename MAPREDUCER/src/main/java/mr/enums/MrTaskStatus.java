@@ -13,13 +13,17 @@ public enum MrTaskStatus {
      */
     ACTIVE(1),
     /**
+     * 计算等待
+     */
+    CALCULATE_WAIT(2),
+    /**
      * 计算进行
      */
-    IN_CALCULATION(2),
+    IN_CALCULATION(3),
     /**
      * 计算完成
      */
-    CALCULATE_OVER(3),
+    CALCULATE_OVER(4),
     ;
 
     private int code;

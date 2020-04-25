@@ -15,6 +15,8 @@ public class Constants {
     public static final String MR_TOPIC = "MR_DATA_TOPIC";
     //parquet文件后缀
     public static final String PARQUET_FILE_SUFFIX = "_parquet";
+    //parquet文件合并标识
+    public static final String PARQUET_MERGE_MARK = "merge-";
     //DDBook的SCHEMA
     public static final String SCHEMA_UUID = "uuid";
     public static final String SCHEMA_AREA = "area";
@@ -25,6 +27,7 @@ public class Constants {
     public static final String MR_INDEX_NAME = "mr_task";
 
     /** =======================定时器周期常量======================= */
+    public static final String CRON_THIRTY_MINUTE = "0 0/30 * * * ?";
     public static final String CRON_FIVE_MINUTE = "0 0/5 * * * ?";
     public static final String CRON_ONE_MINUTE = "0 0/1 * * * ?";
     public static final String CRON_ONE_HOUR = "0 5 0/1 * * ?";

@@ -1,38 +1,17 @@
-import es.ESPoolUtil;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import es.ESCommons;
+import model.MrTaskDetail;
+import mr.enums.MrTaskStatus;
+import mr.utils.ParquetUtil;
 import org.junit.Test;
-import java.io.IOException;
+import java.util.List;
 
 public class MrTest {
 
     @Test
-    public void query() throws Exception {
-        RestHighLevelClient client = ESPoolUtil.getClient();
-        SearchRequest searchRequest = new SearchRequest("mr_task");
-        SearchSourceBuilder searchSourceBuilder =  new SearchSourceBuilder();
-        BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-        boolQuery.must(QueryBuilders.matchQuery("mrStatus", 1));
-        searchSourceBuilder.query(boolQuery);
-        searchRequest.source(searchSourceBuilder);
-        try {
-            //查询结果
-            SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
-            SearchHits hits = searchResponse.getHits();
-            SearchHit[] searchHits = hits.getHits();
-            for (SearchHit hit : searchHits) {
-                System.out.println(hit.getSourceAsString());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void query(){
+        String mrCode = ParquetUtil.getMrTaskCode(System.currentTimeMillis());
+        List<MrTaskDetail> list = ESCommons.findMrTaskByStatus(MrTaskStatus.ACTIVE.getCode(), mrCode);
+        System.out.println(list.toString());
     }
 
 }

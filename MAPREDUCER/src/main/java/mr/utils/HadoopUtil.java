@@ -16,18 +16,18 @@ public class HadoopUtil {
     static{
         HADOOP_CONF = new Configuration();
         //本地测试或者单节点hadoop使用
-//        conf.set("fs.defaultFS","hdfs://hadoopa");
+        HADOOP_CONF.set("fs.defaultFS","hdfs://hadoopa");
 
         //hadoop高可用集群,本地启动默认连接103(mycluster)，linux提交则处于ha模式
-        String nameservices = "mycluster";
-        String[] namenodesAddr = {"hadoopa:8020","hadoopb:8020"};
-        String[] namenodes = {"nn1","nn2"};
-        HADOOP_CONF.set("fs.defaultFS", "hdfs://" + nameservices);
-        HADOOP_CONF.set("dfs.nameservices",nameservices);
-        HADOOP_CONF.set("dfs.ha.namenodes." + nameservices, namenodes[0]+","+namenodes[1]);
-        HADOOP_CONF.set("dfs.namenode.rpc-address." + nameservices + "." + namenodes[0], namenodesAddr[0]);
-        HADOOP_CONF.set("dfs.namenode.rpc-address." + nameservices + "." + namenodes[1], namenodesAddr[1]);
-        HADOOP_CONF.set("dfs.client.failover.proxy.provider." + nameservices,"org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
+//        String nameservices = "mycluster";
+//        String[] namenodesAddr = {"hadoopa:8020","hadoopb:8020"};
+//        String[] namenodes = {"nn1","nn2"};
+//        HADOOP_CONF.set("fs.defaultFS", "hdfs://" + nameservices);
+//        HADOOP_CONF.set("dfs.nameservices",nameservices);
+//        HADOOP_CONF.set("dfs.ha.namenodes." + nameservices, namenodes[0]+","+namenodes[1]);
+//        HADOOP_CONF.set("dfs.namenode.rpc-address." + nameservices + "." + namenodes[0], namenodesAddr[0]);
+//        HADOOP_CONF.set("dfs.namenode.rpc-address." + nameservices + "." + namenodes[1], namenodesAddr[1]);
+//        HADOOP_CONF.set("dfs.client.failover.proxy.provider." + nameservices,"org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider");
     }
 
     public static Configuration getConf(){
