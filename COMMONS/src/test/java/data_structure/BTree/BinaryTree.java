@@ -116,7 +116,7 @@ public class BinaryTree {
     }
 
     /**
-     * 后跟遍历
+     * 后根遍历
      * @param node
      */
     public void PostOrder(BinaryTreeNode node){

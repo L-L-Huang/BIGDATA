@@ -2,11 +2,14 @@ package utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * 时间格式化
  */
-public class DateUtil {
+public class DateUtil<psvm> {
     public static int getHour(long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
@@ -26,6 +29,6 @@ public class DateUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(longToStr(Constants.DAY_FORMAT, System.currentTimeMillis()));
+        System.out.println(2 << 3);
     }
 }

@@ -36,6 +36,7 @@
         <module>MapReducer</module>
         <module>Netty</module>
         <module>Storm</module>
+        <module>HBASE</module>
     </modules>
 
     <build>
