@@ -32,7 +32,7 @@ public class MrCalcJob implements Job {
                         return;
                     }
                 }
-                //提交MR计算任务
+                //TODO 提交MR计算任务
 
             } catch (Exception e) {
                 LOGGER.error("merge parquet file fail, dir=[{}]", mrTaskDetail.getMrInPath());

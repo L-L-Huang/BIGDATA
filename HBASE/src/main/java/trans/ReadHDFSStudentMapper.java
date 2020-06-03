@@ -39,7 +39,7 @@ public class ReadHDFSStudentMapper extends Mapper<LongWritable, Text, ImmutableB
     }
 
     public static void main(String[] args) {
-        String str = "hello word    test";
+        String str = "hello word.txt    test";
         String[] strs = str.split("\\s+");
         System.out.println(strs.length);
     }
