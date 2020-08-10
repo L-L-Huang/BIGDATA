@@ -10,6 +10,7 @@ public class Constants {
 
     /** =======================实时计算常量========================= */
     public static final String STORM_TOPIC = "STORM_DATA_TOPIC";
+    public static final String FLINK_TOPIC = "FLINK_DATA_TOPIC_";
 
     /** =======================离线计算常量========================= */
     public static final String MR_TOPIC = "MR_DATA_TOPIC";

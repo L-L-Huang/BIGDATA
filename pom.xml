@@ -37,6 +37,7 @@
         <module>Netty</module>
         <module>Storm</module>
         <module>HBASE</module>
+        <module>FLINK</module>
     </modules>
 
     <build>
